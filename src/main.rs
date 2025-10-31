@@ -32,6 +32,10 @@ fn main() -> Result<()> {
 fn grex_mode(args: &CliArgs) -> Result<()> {
     let input = read_input(args)?;
 
+    if input.trim().is_empty() {
+        return Ok(());
+    }
+
     let parser = XmlParser::default();
     let options = ParserOptions {
         recover: false,
@@ -194,6 +198,10 @@ fn ungrex_mode(args: &CliArgs) -> Result<()> {
     let mut cache: HashMap<String, Node> = HashMap::new();
 
     for (line_num, line) in input.lines().enumerate() {
+        if line.trim().is_empty() {
+            continue;
+        }
+
         let (xpath, value) = parse_grex_line(line)
             .with_context(|| format!("line {}: malformed grex input", line_num + 1))?;
         apply_grex_line(&mut doc, &xpath, &value, &mut cache)
