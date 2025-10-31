@@ -1,0 +1,10 @@
+[package]
+name = "grex"
+version = "1.0.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0"
+clap = { version = "4.5", features = ["derive"] }
+libxml = "0.3"
+sigpipe = "0.1"
