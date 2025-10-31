@@ -1,0 +1,6 @@
+/root/emoji/text() = 🍕🌮🍔
+/root/chinese/text() = 你好世界
+/root/japanese/text() = こんにちは
+/root/arabic/text() = مرحبا
+/root/mixed/@lang = 日本語
+/root/mixed/text() = Hello 世界 🌍

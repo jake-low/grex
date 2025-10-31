@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pizzeria name="Panucci's Pizza" rating="2.3">
+  <location>
+    <address>1020 West 57th Street, New York, NY</address>
+    <phone>(212) 555-PIZZA</phone>
+  </location>
+  <menu>
+    <pizza name="Cheese" price="14.99"/>
+    <pizza name="Pepperoni" price="15.99"/>
+    <pizza name="Anchovy Special" price="17.99"/>
+  </menu>
+</pizzeria>

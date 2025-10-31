@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <empty_self_closing/>
+  <empty_with_tags></empty_with_tags>
+  <with_attrs id="123" name="test"/>
+  <parent>
+    <child/>
+  </parent>
+</root>

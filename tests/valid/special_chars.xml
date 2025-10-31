@@ -1,0 +1,10 @@
+<root>
+  <quotes attr="He said &quot;hello&quot;">She said "goodbye"</quotes>
+  <ampersands>Roses &amp; Violets</ampersands>
+  <entities>&lt;tag&gt; is less than &amp; greater than</entities>
+  <newlines>Line one
+Line two
+Line three</newlines>
+  <apostrophes attr='it&apos;s'>it's fine</apostrophes>
+  <formula>x = y + 2</formula>
+</root>

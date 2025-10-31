@@ -1,0 +1,5 @@
+/book/@isbn = 978-1-71850-444-8
+/book/@title = The Rust Programming Language
+/book/author[1]/text() = Steve Klabnik
+/book/author[2]/text() = Carol Nichols
+/book/author[3]/text() = Chris Krycho

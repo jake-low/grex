@@ -1,0 +1,8 @@
+/root/quotes/@attr = He said "hello"
+/root/quotes/text() = She said "goodbye"
+/root/ampersands/text() = Roses & Violets
+/root/entities/text() = <tag> is less than & greater than
+/root/newlines/text() = Line one\nLine two\nLine three
+/root/apostrophes/@attr = it's
+/root/apostrophes/text() = it's fine
+/root/formula/text() = x = y + 2

@@ -1,0 +1,6 @@
+/root/leading_spaces/text() =    value with leading spaces
+/root/trailing_spaces/text() = value with trailing spaces   
+/root/both_spaces/text() =    value with both   
+/root/tabs/text() = \ttab before and after\t
+/root/preserved/@attr =   spaces  
+/root/preserved/text() = normal text

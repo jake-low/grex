@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<book title="The Rust Programming Language" isbn="978-1-71850-444-8">
+  <author>Steve Klabnik</author>
+  <author>Carol Nichols</author>
+  <author>Chris Krycho</author>
+</book>

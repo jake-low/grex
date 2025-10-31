@@ -1,0 +1,8 @@
+<root>
+  <leading_spaces>   value with leading spaces</leading_spaces>
+  <trailing_spaces>value with trailing spaces   </trailing_spaces>
+  <both_spaces>   value with both   </both_spaces>
+  <just_whitespace>   </just_whitespace>
+  <tabs>	tab before and after	</tabs>
+  <preserved attr="  spaces  ">normal text</preserved>
+</root>
