@@ -135,3 +135,76 @@ fn test_empty_grex_input() {
 fn test_nonexistent_file() {
     grex().arg("nonexistent-file.xml").assert().failure();
 }
+
+#[test]
+fn workflow_grep_filter_attributes() {
+    let grex_output = run_grex("tests/valid/pizzeria.xml");
+
+    let filtered: Vec<&str> = grex_output
+        .lines()
+        .filter(|line| line.contains("@price"))
+        .collect();
+
+    assert_eq!(filtered.len(), 3);
+    assert!(filtered[0].contains("14.99"));
+    assert!(filtered[1].contains("15.99"));
+    assert!(filtered[2].contains("17.99"));
+}
+
+#[test]
+fn workflow_grep_filter_path() {
+    let grex_output = run_grex("tests/valid/pizzeria.xml");
+
+    let filtered: Vec<&str> = grex_output
+        .lines()
+        .filter(|line| line.contains("/location/"))
+        .collect();
+
+    assert_eq!(filtered.len(), 2);
+    assert!(filtered.iter().any(|line| line.contains("address")));
+    assert!(filtered.iter().any(|line| line.contains("phone")));
+}
+
+#[test]
+fn workflow_grep_filter_value() {
+    let grex_output = run_grex("tests/valid/pizzeria.xml");
+
+    let filtered: Vec<&str> = grex_output
+        .lines()
+        .filter(|line| line.contains("Anchovy"))
+        .collect();
+
+    assert_eq!(filtered.len(), 1);
+    assert!(filtered[0].contains("/pizzeria/menu/pizza[3]/@name"));
+}
+
+#[test]
+fn workflow_filter_and_reconstruct() {
+    let grex_output = run_grex("tests/valid/pizzeria.xml");
+
+    let filtered: String = grex_output
+        .lines()
+        .filter(|line| !line.contains("/menu/pizza"))
+        .collect::<Vec<&str>>()
+        .join("\n");
+
+    let reconstructed = run_ungrex(&filtered);
+
+    assert!(reconstructed.contains("<?xml"));
+    assert!(reconstructed.contains("<pizzeria"));
+    assert!(reconstructed.contains("<location>"));
+
+    assert!(!reconstructed.contains("<pizza"));
+}
+
+#[test]
+fn workflow_sed_style_value_replacement() {
+    let grex_output = run_grex("tests/valid/pizzeria.xml");
+
+    let modified = grex_output.replace("Panucci's Pizza", "Joe's Pizza");
+
+    let reconstructed = run_ungrex(&modified);
+
+    assert!(reconstructed.contains("Joe's Pizza"));
+    assert!(!reconstructed.contains("Panucci's Pizza"));
+}
