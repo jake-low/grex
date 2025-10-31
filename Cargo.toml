@@ -1,6 +1,10 @@
 [package]
 name = "grex"
 version = "1.0.0"
+description = "Flatten XML into a line-oriented, greppable format"
+authors = ["Jake Low <hello@jakelow.com>"]
+homepage = "https://github.com/jake-low/grex"
+repository = "https://github.com/jake-low/grex"
 edition = "2024"
 
 [dependencies]
