@@ -88,3 +88,50 @@ generate_tests!(
     many_siblings,
     whitespace,
 );
+
+#[test]
+fn test_malformed_xml() {
+    grex().arg("tests/invalid/malformed.xml").assert().failure();
+}
+
+#[test]
+fn test_invalid_grex_missing_separator() {
+    grex()
+        .arg("--ungrex")
+        .arg("tests/invalid/missing_separator.grex")
+        .assert()
+        .failure();
+}
+
+#[test]
+fn test_invalid_grex_bad_xpath() {
+    grex()
+        .arg("--ungrex")
+        .arg("tests/invalid/bad_xpath.grex")
+        .assert()
+        .failure();
+}
+
+#[test]
+fn test_empty_xml_input() {
+    grex().write_stdin("").assert().success().stdout("");
+}
+
+#[test]
+fn test_empty_grex_input() {
+    let output = grex()
+        .arg("--ungrex")
+        .write_stdin("")
+        .assert()
+        .success()
+        .get_output()
+        .stdout
+        .clone();
+    let output = String::from_utf8(output).expect("Invalid UTF-8");
+    assert!(output.contains("<?xml"));
+}
+
+#[test]
+fn test_nonexistent_file() {
+    grex().arg("nonexistent-file.xml").assert().failure();
+}
