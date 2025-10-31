@@ -12,8 +12,15 @@ use libxml::tree::{Document, Node};
 #[derive(Parser)]
 #[command(version, about)]
 struct CliArgs {
+    /// Convert Grex format back to XML
     #[arg(long)]
     ungrex: bool,
+
+    /// Compact XML output (no pretty printing)
+    #[arg(short, long, requires = "ungrex")]
+    compact: bool,
+
+    /// XML or Grex file (depending on mode); reads from stdin if not specified
     input_file: Option<String>,
 }
 
@@ -184,9 +191,11 @@ fn ungrex_mode(args: &CliArgs) -> Result<()> {
     // default is 2, but we need one extra for the prefix cache
     set_node_rc_guard(3);
 
-    // Treat whitespace as not significant for pretty printing
-    unsafe {
-        xmlKeepBlanksDefault(0);
+    if !args.compact {
+        // Treat whitespace as not significant for pretty printing
+        unsafe {
+            xmlKeepBlanksDefault(0);
+        }
     }
 
     let mut doc = Document::new().expect("Failed to create document");
@@ -208,15 +217,15 @@ fn ungrex_mode(args: &CliArgs) -> Result<()> {
             .with_context(|| format!("line {}", line_num + 1))?;
     }
 
-    print_document(&doc);
+    print_document(&doc, args.compact);
     Ok(())
 }
 
-fn print_document(doc: &Document) {
+fn print_document(doc: &Document, compact: bool) {
     unsafe {
         let filename = CString::new("-").unwrap();
         let encoding = CString::new("UTF-8").unwrap();
-        let format = 1;
+        let format = if compact { 0 } else { 1 };
 
         xmlSaveFormatFileEnc(filename.as_ptr(), doc.doc_ptr(), encoding.as_ptr(), format);
     }
