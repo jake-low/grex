@@ -365,3 +365,36 @@ fn unescape_value(s: &str) -> String {
     }
     result
 }
+
+#[test]
+#[ignore = "CDATA content is not preserved (known limitation)"]
+fn limitation_cdata() {
+    let input = fs::read_to_string("tests/limitations/cdata.xml").unwrap();
+
+    let grex_output = run_grex_stdin(&input);
+    let xml_output = run_ungrex(&grex_output);
+
+    assert_eq!(xml_output, input);
+}
+
+#[test]
+#[ignore = "Mixed text and element content loses text portions (known limitation)"]
+fn limitation_mixed_content() {
+    let input = fs::read_to_string("tests/limitations/mixed_content.xml").unwrap();
+
+    let grex_output = run_grex_stdin(&input);
+    let xml_output = run_ungrex(&grex_output);
+
+    assert_eq!(xml_output, input);
+}
+
+#[test]
+#[ignore = "Comments are not preserved (known limitation)"]
+fn limitation_comments() {
+    let input = fs::read_to_string("tests/limitations/comments.xml").unwrap();
+
+    let grex_output = run_grex_stdin(&input);
+    let xml_output = run_ungrex(&grex_output);
+
+    assert_eq!(xml_output, input);
+}
