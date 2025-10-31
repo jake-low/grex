@@ -74,7 +74,13 @@ fn traverse_node(
     // to output attrs in the same order they're given in the input
     attrs.sort_by(|a, b| a.0.cmp(&b.0));
     for (attr_name, attr_value) in attrs {
-        writeln!(writer, "{}/@{} = {}", path, attr_name, attr_value)?;
+        writeln!(
+            writer,
+            "{}/@{} = {}",
+            path,
+            attr_name,
+            escape_value(&attr_value)
+        )?;
     }
 
     let has_element_children = node.get_first_element_child().is_some();
@@ -82,7 +88,7 @@ fn traverse_node(
     if !has_element_children {
         let text = get_text_content(node);
         if !text.trim().is_empty() {
-            writeln!(writer, "{}/text() = {}", path, text)?;
+            writeln!(writer, "{}/text() = {}", path, escape_value(&text))?;
         }
     }
 
@@ -115,6 +121,56 @@ fn get_text_content(node: &Node) -> String {
         .filter(|child| child.get_type() == Some(libxml::tree::NodeType::TextNode))
         .map(|child| child.get_content())
         .collect()
+}
+
+fn escape_value(s: &str) -> String {
+    s.chars()
+        .flat_map(|ch| match ch {
+            '\\' => vec!['\\', '\\'],
+            '\n' => vec!['\\', 'n'],
+            '\t' => vec!['\\', 't'],
+            _ => vec![ch],
+        })
+        .collect()
+}
+
+fn unescape_value(s: &str) -> String {
+    let mut result = String::with_capacity(s.len());
+    let mut chars = s.chars();
+
+    while let Some(ch) = chars.next() {
+        if ch == '\\' {
+            match chars.next() {
+                Some('\\') => result.push('\\'),
+                Some('n') => result.push('\n'),
+                Some('t') => result.push('\t'),
+                Some(other) => {
+                    // invalid escape sequence; keep the backslash and character
+                    result.push('\\');
+                    result.push(other);
+                }
+                None => result.push('\\'), // trailing backslash
+            }
+        } else {
+            result.push(ch);
+        }
+    }
+    result
+}
+
+fn escape_xml_entities(s: &str) -> String {
+    let mut result = String::with_capacity(s.len());
+    for ch in s.chars() {
+        match ch {
+            '&' => result.push_str("&amp;"),
+            '<' => result.push_str("&lt;"),
+            '>' => result.push_str("&gt;"),
+            '"' => result.push_str("&quot;"),
+            '\'' => result.push_str("&apos;"),
+            _ => result.push(ch),
+        }
+    }
+    result
 }
 
 fn ungrex_mode(args: &CliArgs) -> Result<()> {
@@ -160,7 +216,7 @@ fn print_document(doc: &Document) {
 
 fn parse_grex_line(line: &str) -> Option<(String, String)> {
     let (xpath, value) = line.split_once(" = ")?;
-    Some((xpath.to_string(), value.to_string()))
+    Some((xpath.to_string(), unescape_value(value)))
 }
 
 fn apply_grex_line(
@@ -172,7 +228,8 @@ fn apply_grex_line(
     if let Some(element_path) = xpath.strip_suffix("/text()") {
         let mut node = get_or_create_node(doc, element_path, cache)?;
 
-        node.set_content(value)
+        let escaped = escape_xml_entities(value);
+        node.set_content(&escaped)
             .map_err(|e| anyhow::anyhow!("Failed to set text content: {:?}", e))?;
         Ok(())
     } else if let Some(attr_pos) = xpath.rfind("/@") {
