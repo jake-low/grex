@@ -214,6 +214,7 @@ dependencies = [
  "anyhow",
  "assert_cmd",
  "clap",
+ "glob",
  "libxml",
  "paste",
  "sigpipe",
